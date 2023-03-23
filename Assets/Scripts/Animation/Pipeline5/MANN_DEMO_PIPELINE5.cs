@@ -139,8 +139,8 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         TimeSeries = new TimeSeries(PastKeys, FutureKeys, PastWindow, FutureWindow, resolution); // this is past and future time series
         TimeSeriesPast = new TimeSeries(PastKeys, 0, PastWindow, 0, resolution);
         RootSeries = new RootSeries(TimeSeries, transform);
-        StyleSeries = new StyleSeries(TimeSeries, new string[] { "idle", "move", "sit", "lie", "stand"}, new float[] { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //need to confirm what's best here
-        //StyleSeries = new StyleSeries(TimeSeries, new string[] { "idle", "move", "sit", "lie", "stand", "jump" }, new float[] { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+        //StyleSeries = new StyleSeries(TimeSeries, new string[] { "idle", "move", "sit", "lie", "stand"}, new float[] { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //need to confirm what's best here
+        StyleSeries = new StyleSeries(TimeSeries, new string[] { "idle", "move", "sit", "lie", "stand", "jump" }, new float[] { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f });
         ControlContactSeries = new ContactSeries(TimeSeriesPast, new string[] { "FrontLeftPaw", "FrontRightPaw" });
         LFSeries = new RootSeries(TimeSeriesPast); // we don't care about positions and velocities are intialised to zero so these are grand as is?
         RFSeries = new RootSeries(TimeSeriesPast);
@@ -311,14 +311,14 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         // next line is incorrect? Seems my net should be predicting a velocity as well as in LCP? Check what MANN does?
         RootSeries.Velocities[TimeSeries.Pivot] = xz_vel.GetRelativeDirectionFrom(root) * GetFrameRate();
 
-        //// Need to insert Idle and Move here 
-        StyleSeries.Values[TimeSeries.Pivot][0] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 1.0f : 0.0f;
-        StyleSeries.Values[TimeSeries.Pivot][1] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 0.0f : 1.0f;
+        ////// Need to insert Idle and Move here 
+        //StyleSeries.Values[TimeSeries.Pivot][0] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 1.0f : 0.0f;
+        //StyleSeries.Values[TimeSeries.Pivot][1] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 0.0f : 1.0f;
 
 
         // update actions for Pivot, based on NN output
-        for (int j = 2; j < StyleSeries.Styles.Length; j++) // need to fix this Lerp to be weighted properly
-        //for (int j = 0; j < StyleSeries.Styles.Length; j++)
+        //for (int j = 2; j < StyleSeries.Styles.Length; j++) // need to fix this Lerp to be weighted properly
+        for (int j = 0; j < StyleSeries.Styles.Length; j++)
         {
             StyleSeries.Values[TimeSeries.Pivot][j] = Mathf.Lerp(
                 StyleSeries.Values[TimeSeries.Pivot][j],
@@ -349,10 +349,10 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                  );
 
             //// Need to insert Idle and Move here 
-            StyleSeries.Values[index][0] = (v.ZeroY().magnitude < MoveThreshold) ? 1.0f : 0.0f;
-            StyleSeries.Values[index][1] = (v.ZeroY().magnitude < MoveThreshold) ? 0.0f : 1.0f;
-            for (int j = 2; j < StyleSeries.Styles.Length; j++)
-            //for (int j = 0; j < StyleSeries.Styles.Length; j++)
+            //StyleSeries.Values[index][0] = (v.ZeroY().magnitude < MoveThreshold) ? 1.0f : 0.0f;
+            //StyleSeries.Values[index][1] = (v.ZeroY().magnitude < MoveThreshold) ? 0.0f : 1.0f;
+            //for (int j = 2; j < StyleSeries.Styles.Length; j++)
+            for (int j = 0; j < StyleSeries.Styles.Length; j++)
             {
                 StyleSeries.Values[index][j] = Mathf.Lerp(
                     StyleSeries.Values[index][j],
@@ -498,7 +498,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         TargetDirection = Controller.QueryTargetDirection();
         TargetRotation = Quaternion.LookRotation(TargetDirection, Vector3.up);
         InverseTargetRotation = Quaternion.Inverse(TargetRotation);
-
+        Debug.DrawLine(Actor.GetBonePosition("Hips"), Actor.GetBonePosition("Hips") + TargetDirection * 20.0f, Color.red, 1.0f);
 
         // not sure if I should be damping these or what values to use?
         TargetLFLocalVelocity = InverseTargetRotation * TargetLFGlobalVelocity * ForwardScaling;
@@ -591,7 +591,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                 Vector3.Lerp(
                     RootSeries.GetPosition(i),
                     Actor.GetRoot().position + i.Ratio(TimeSeries.Pivot, TimeSeries.Samples.Length - 1) * SmoothedTargetGlobalRootVelocity * FutureWindow, // why not using my original spring damper stuff here??
-                    1.0f//Controller.QueryFunction("rootPositionControl", i)
+                    1f//Controller.QueryFunction("rootPositionControl", i)
                 )
             ); ; ;
 
@@ -599,7 +599,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                 Quaternion.Slerp(
                     RootSeries.GetRotation(i),
                     Quaternion.LookRotation(SmoothedTargetDirection, Vector3.up),
-                    1.0f//Controller.QueryFunction("rootRotationControl", i)          // this is very different to LMP paper? again why not use my SpringDamper stuff?
+                    1f//Controller.QueryFunction("rootRotationControl", i)          // this is very different to LMP paper? again why not use my SpringDamper stuff?
                 )
             ); ;
 
@@ -608,7 +608,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                 Vector3.Lerp(
                     RootSeries.GetVelocity(i),
                     SmoothedTargetGlobalRootVelocity,                                              // is this definitely what we want here?
-                    1.0f//Controller.QueryFunction("rootVelocityControl", i)
+                    1f//Controller.QueryFunction("rootVelocityControl", i)
                 )
             );
         }
@@ -622,20 +622,22 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         idle = (TargetLocalRootVelocity.ZeroY().magnitude < MoveThreshold) ? 1.0f : 0f; // not sure is TargetLocalRootVelocity what I want here?? Should base of human global velocity and if this is <threshold set idle to 1.0
         move = 1.0f - idle;
 
-        isSitting = Controller.QuerySit();
-        isLieing = Controller.QueryLie();
-        isStanding = Controller.QueryStand();
+        isSitting =  Controller.QuerySit();
+        isLieing = 0.0f; // Controller.QueryLie();
+        isStanding = 0.0f; // Controller.QueryStand();
 
-        if (move == 1.0f)
-        {
-            isSitting = 0.0f;
-            isLieing = 0.0f;
-            isStanding = 0.0f;
-        }
+        //if (move == 1.0f)
+        //{
+        //    isSitting = 0.0f;
+        //    isLieing = 0.0f;
+        //    isStanding = 0.0f;
+        //}
         if (isSitting == 1.0f)
         {
             isLieing = 0.0f;
             isStanding = 0.0f;
+            move = 0.0f;
+            idle = 1.0f;
         }
         for (int i = TimeSeries.Pivot; i < TimeSeries.SampleCount; i++)
         {
@@ -643,35 +645,35 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                 StyleSeries.Values[i][0] = Mathf.Lerp(
                     StyleSeries.Values[i][0],
                     idle,
-                    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );
                 StyleSeries.Values[i][1] = Mathf.Lerp(
-                    StyleSeries.Values[i][2],
+                    StyleSeries.Values[i][1],
                     move,
-                    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );
                 StyleSeries.Values[i][2] = Mathf.Lerp(
                     StyleSeries.Values[i][2],
                     isSitting,
-                    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );
                 StyleSeries.Values[i][3] = Mathf.Lerp(
                     StyleSeries.Values[i][3],
                     0.0f, //isLieing,
-                    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );;
                 StyleSeries.Values[i][4] = Mathf.Lerp(
                     StyleSeries.Values[i][4],
-                    isStanding,
-                    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    0.0f,
+                    1//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );
 
-                //// jump, ideally delete this
-                //StyleSeries.Values[i][5] = Mathf.Lerp(
-                //    StyleSeries.Values[i][5],
-                //    0.0f,
-                //    1.0f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
-                //    );
+                // jump, ideally delete this
+                StyleSeries.Values[i][5] = Mathf.Lerp(
+                    StyleSeries.Values[i][5],
+                    0.0f,
+                    1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
+                    );
         }
 
         // smooth both this and TargetDirection using springs?

@@ -61,6 +61,7 @@ public abstract class NeuralAnimation : MonoBehaviour
     private void Update()
     {
         //Utility.SetFPS(Mathf.RoundToInt(90.0f));
+        
     }
 
     //private void LateUpdate() // Starke uses Updata? Does it matter?

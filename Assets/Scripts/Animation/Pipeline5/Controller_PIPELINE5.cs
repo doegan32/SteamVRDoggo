@@ -115,8 +115,9 @@ public class Controller_PIPELINE5 : MonoBehaviour
     [Header("Joints to track")]
     public Transform LeftFoot;
     public Transform RightFoot;
+	public Transform Pelvis;
 
-    [Header("Contact thresholds")]
+	[Header("Contact thresholds")]
 	[Range(0.0f, 2.0f)]
 	public float VelocityThreshold = 0.05f;
 	[Range(0.0f, 2.0f)]
@@ -167,23 +168,23 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
         LeftFootPosition = LeftFoot.position;
         LastLeftFootPosition = LeftFoot.position;
-  //      LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
-		//LastLeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
-		LeftFootGlobalVelocity = Vector3.zero;
+        ////      LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
+        ////LastLeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
+        LeftFootGlobalVelocity = Vector3.zero;
         LastRightFootPosition = RightFoot.position;
         RightFootPosition = RightFoot.position;
-        //RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
-        //LastRightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
+        //      //RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
+        //      //LastRightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
 
         RightFootGlobalVelocity = Vector3.zero;
 
-		//PelvisPosition = Pelvis.position;
-		//LastPelvisPosition = Pelvis.position;
-		PelvisGlobalVelocity = Vector3.zero;
+        ////PelvisPosition = Pelvis.position;
+        ////LastPelvisPosition = Pelvis.position;
+        //PelvisGlobalVelocity = Vector3.zero;
 
 
-		//PelvisForwardDirection = Vector3.ProjectOnPlane(HMDOrientation.action.ReadValue<Quaternion>() * Vector3.forward, Vector3.up);
-}
+        PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
+    }
 
 
 	// https://learn.microsoft.com/en-us/dotnet/api/system.func-1?view=net-7.0
@@ -228,26 +229,28 @@ public class Controller_PIPELINE5 : MonoBehaviour
     public void UpdateController()
 	{
 
-		LastLeftFootPosition = LeftFootPosition;
-		LeftFootPosition = LeftFoot.position;
-		//LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
-		LeftFootGlobalVelocity = (LeftFootPosition - LastLeftFootPosition) / dt;
+        LastLeftFootPosition = LeftFootPosition;
+        LeftFootPosition = LeftFoot.position;
+        ////LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
+        LeftFootGlobalVelocity = (LeftFootPosition - LastLeftFootPosition) / dt;
 
 
-		LastRightFootPosition = RightFootPosition;
-		RightFootPosition = RightFoot.position;
-		//RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
-		RightFootGlobalVelocity = (RightFootPosition - LastRightFootPosition) / dt;
+        LastRightFootPosition = RightFootPosition;
+        RightFootPosition = RightFoot.position;
+        ////RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
+        RightFootGlobalVelocity = (RightFootPosition - LastRightFootPosition) / dt;
 
-		//PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
-		//PelvisForwardDirection = Vector3.ProjectOnPlane(HMDOrientation.action.ReadValue<Quaternion>() * Vector3.forward, Vector3.up);
+        PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
+		
+		////PelvisForwardDirection = Vector3.ProjectOnPlane(HMDOrientation.action.ReadValue<Quaternion>() * Vector3.forward, Vector3.up);
 
-		//LastPelvisPosition = PelvisPosition;
-		//PelvisPosition = Pelvis.position;
-		//PelvisGlobalVelocity = Vector3.ProjectOnPlane((PelvisPosition - LastPelvisPosition) / dt, Vector3.up);
+		////LastPelvisPosition = PelvisPosition;
+		PelvisPosition = Pelvis.position;
+		// Debug.Log("Pelvis Height: " + PelvisPosition.y.ToString());
+		////PelvisGlobalVelocity = Vector3.ProjectOnPlane((PelvisPosition - LastPelvisPosition) / dt, Vector3.up);
 
 
-		//HMDHeight = HMDPosition.action.ReadValue<Vector3>().y;
+		////HMDHeight = HMDPosition.action.ReadValue<Vector3>().y;
 	}
 
 
@@ -377,7 +380,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	}
 	public Vector3 QueryTargetDirection()
 	{
-		return Vector3.forward;//  PelvisForwardDirection; //
+		return PelvisForwardDirection; //
 	}
 
 	public Vector3 QueryTargetLFVelocity()
@@ -416,17 +419,17 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QuerySit()
 	{
-		//if (Pelvis.position.y < PelvisThreshold && !(Neck.position.y < NeckThreshold))
-		//if (Pelvis.position.y < PelvisThreshold )
-		//if (HMDHeight < PelvisThreshold)
-		//{
-		//	return 1.0f;
-  //      }
-  //      else
-  //      {
-			return 0.0f;
-        //}
-	}
+        //if (Pelvis.position.y < PelvisThreshold && !(Neck.position.y < NeckThreshold))
+        if (Pelvis.position.y < PelvisThreshold)
+        //if (HMDHeight < PelvisThreshold)
+        {
+            return 1.0f;
+        }
+        else
+        {
+            return 0.0f;
+        }
+    }
 
 	public float QueryLie()
 	{
