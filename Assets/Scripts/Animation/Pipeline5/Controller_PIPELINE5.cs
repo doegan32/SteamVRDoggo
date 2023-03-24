@@ -121,17 +121,27 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	[Range(0.0f, 2.0f)]
 	public float VelocityThreshold = 0.05f;
 	[Range(0.0f, 2.0f)]
-	public float LFPositionTheshold = 0.035f;
+	public float LFPositionTheshold = 0.0f;
+	[SerializeField]
+	private bool LFThresholdSet = false;
 	[Range(0.0f, 2.0f)]
-	public float RFPositionTheshold = 0.035f;
+	public float RFPositionTheshold = 0.0f;
+	[SerializeField]
+	private bool RFThresholdSet = false;
 	[Range(0.0f, 5.0f)]
-	public float FeetThresholdMultiplier = 1.2f;
+	public float FeetThresholdMultiplier = 1.05f;
+	
+
 
 	[Header("Action control")]
 	//public Transform Neck;
 	//public Transform Pelvis;
 	[Range(0.0f, 2.0f)]
-	public float PelvisThreshold = 1.0f;
+	public float PelvisPositionThreshold = 1.0f;
+	[SerializeField]
+	private bool PelvisThresholdSet = false;
+	[Range(0.0f, 5.0f)]
+	public float PelvisThresholdMultiplier = 0.9f;
 	[Range(0.0f, 2.0f)]
 	public float NeckThreshold = 1.5f;
 
@@ -173,39 +183,26 @@ public class Controller_PIPELINE5 : MonoBehaviour
 		dt = deltatime;
 
 		// set up thresholds for body parts
-		LFPositionTheshold = LeftFoot.position.y * FeetThresholdMultiplier;
-		RFPositionTheshold = RightFoot.position.y * FeetThresholdMultiplier;
-		Debug.Log(Pelvis.position);
+		LFPositionTheshold = 0.0f;
+		RFPositionTheshold = 0.0f;
+		FeetThresholdMultiplier = 1.05f; //  remove if I identify perfect value
 
-
-
-
+		PelvisPositionThreshold = 1.0f;
+		PelvisThresholdMultiplier = 0.7f;  //  remove if I identify perfect value
 
 
 		LeftFootPosition = LeftFoot.position;
         LastLeftFootPosition = LeftFoot.position;
-        ////      LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
-        ////LastLeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
         LeftFootGlobalVelocity = Vector3.zero;
+
         LastRightFootPosition = RightFoot.position;
         RightFootPosition = RightFoot.position;
-        //      //RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
-        //      //LastRightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
-
         RightFootGlobalVelocity = Vector3.zero;
 
-        ////PelvisPosition = Pelvis.position;
-        ////LastPelvisPosition = Pelvis.position;
-        //PelvisGlobalVelocity = Vector3.zero;
-
-
+        PelvisPosition = Pelvis.position;
+        LastPelvisPosition = Pelvis.position;
+        PelvisGlobalVelocity = Vector3.zero;
         PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
-
-
-
-	
-
-
 	}
 
 
@@ -251,28 +248,47 @@ public class Controller_PIPELINE5 : MonoBehaviour
     public void UpdateController()
 	{
 
-		//Debug.Log(LeftFoot.position);
-		Debug.Log(Pelvis.position);
+		// Create user based thresholds
+		if (!LFThresholdSet )
+        {
+			LFPositionTheshold = LeftFoot.position.y * FeetThresholdMultiplier;
+			if (LFPositionTheshold > 0.0f)
+            {
+				LFThresholdSet = true;
+			}
+		}
+		if (!RFThresholdSet)
+		{
+			RFPositionTheshold = RightFoot.position.y * FeetThresholdMultiplier;
+			if (RFPositionTheshold > 0.0f)
+			{
+				RFThresholdSet = true;
+			}
+
+		}
+		if (!PelvisThresholdSet)
+		{
+			PelvisPositionThreshold = Pelvis.position.y * PelvisThresholdMultiplier;
+			if (PelvisPositionThreshold != 1.0f && PelvisPositionThreshold != 0.0f)
+			{
+				PelvisThresholdSet = true;
+			}
+
+		}
+
 
 		LastLeftFootPosition = LeftFootPosition;
         LeftFootPosition = LeftFoot.position;
-        ////LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
         LeftFootGlobalVelocity = (LeftFootPosition - LastLeftFootPosition) / dt;
-
 
         LastRightFootPosition = RightFootPosition;
         RightFootPosition = RightFoot.position;
-        ////RightFootPosition = RightControllerPosition.action.ReadValue<Vector3>();
         RightFootGlobalVelocity = (RightFootPosition - LastRightFootPosition) / dt;
 
         PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
-		
-		////PelvisForwardDirection = Vector3.ProjectOnPlane(HMDOrientation.action.ReadValue<Quaternion>() * Vector3.forward, Vector3.up);
-
-		////LastPelvisPosition = PelvisPosition;
+		LastPelvisPosition = PelvisPosition;
 		PelvisPosition = Pelvis.position;
-		// Debug.Log("Pelvis Height: " + PelvisPosition.y.ToString());
-		////PelvisGlobalVelocity = Vector3.ProjectOnPlane((PelvisPosition - LastPelvisPosition) / dt, Vector3.up);
+		PelvisGlobalVelocity = Vector3.ProjectOnPlane((PelvisPosition - LastPelvisPosition) / dt, Vector3.up);
 
 
 		////HMDHeight = HMDPosition.action.ReadValue<Vector3>().y;
@@ -420,7 +436,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryLFContact()
 	{
-		if ((LeftFootGlobalVelocity.magnitude < VelocityThreshold)) // (LeftFootPosition.y < PositionTheshold) && (
+		if (LeftFootPosition.y < LFPositionTheshold)  //((LeftFootGlobalVelocity.magnitude < VelocityThreshold)) // (LeftFootPosition.y < PositionTheshold) && (
 		{
 			return 1.0f;
 		}
@@ -432,7 +448,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryRFContact()
 	{
-		if ( (RightFootGlobalVelocity.magnitude < VelocityThreshold)) // (RightFootPosition.y < PositionTheshold) &&
+		if ( RightFootPosition.y < RFPositionTheshold) //( (RightFootGlobalVelocity.magnitude < VelocityThreshold)) // (RightFootPosition.y < PositionTheshold) &&
 		{
 			return 1.0f;
 		}
@@ -445,7 +461,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	public float QuerySit()
 	{
         //if (Pelvis.position.y < PelvisThreshold && !(Neck.position.y < NeckThreshold))
-        if (Pelvis.position.y < PelvisThreshold)
+        if (Pelvis.position.y < PelvisPositionThreshold)
         //if (HMDHeight < PelvisThreshold)
         {
             return 1.0f;
