@@ -143,7 +143,11 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	[Range(0.0f, 5.0f)]
 	public float PelvisThresholdMultiplier = 0.9f;
 	[Range(0.0f, 2.0f)]
-	public float NeckThreshold = 1.5f;
+	public float NeckPositionThreshold = 1.0f;
+	[SerializeField]
+	private bool NeckThresholdSet = false;
+	[Range(0.0f, 5.0f)]
+	public float NeckThresholdMultiplier = 0.9f;
 
 
 
@@ -159,6 +163,8 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	private Vector3 PelvisPosition;
 	private Vector3 LastPelvisPosition;
 	private Vector3 PelvisGlobalVelocity;
+	private Vector3 NeckPosition;
+
 
 	private Vector3 PelvisForwardDirection = Vector3.forward;
 
