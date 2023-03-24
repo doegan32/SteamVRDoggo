@@ -118,7 +118,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         //Controller_PIPELINE5.Logic sit = Controller.AddLogic("sit", () => Controller.QuerySit());
         Controller_PIPELINE5.Function sitControl = Controller.AddFunction("sitControl", (x) => TimeSeries.GetControl((int)x, ActionBias, 0.1f, ControlStrength));
         Controller_PIPELINE5.Function sitCorrection = Controller.AddFunction("sitCorrection", (x) => TimeSeries.GetCorrection((int)x, CorrectionBias, CorrectionStrength, 0.0f));
-       // Controller_PIPELINE5.Logic lie = Controller.AddLogic("lie", () => Controller.QueryLie());
+        // Controller_PIPELINE5.Logic lie = Controller.AddLogic("lie", () => Controller.QueryLie());
         Controller_PIPELINE5.Function lieControl = Controller.AddFunction("lieControl", (x) => TimeSeries.GetControl((int)x, ActionBias, 0.1f, ControlStrength));
         Controller_PIPELINE5.Function lieCorrection = Controller.AddFunction("lieCorrection", (x) => TimeSeries.GetCorrection((int)x, CorrectionBias, CorrectionStrength, 0.0f));
         //Controller_PIPELINE5.Logic stand = Controller.AddLogic("stand", () => Controller.QueryStand());
@@ -357,7 +357,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                 StyleSeries.Values[index][j] = Mathf.Lerp(
                     StyleSeries.Values[index][j],
                     NeuralNetwork.Read(),
-                    Controller.QueryFunction(StyleSeries.Styles[j] + "Correction", index)
+                    0.5f //Controller.QueryFunction(StyleSeries.Styles[j] + "Correction", index)
                     );
             }
         }
@@ -498,7 +498,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         TargetDirection = Controller.QueryTargetDirection();
         TargetRotation = Quaternion.LookRotation(TargetDirection, Vector3.up);
         InverseTargetRotation = Quaternion.Inverse(TargetRotation);
-        Debug.DrawLine(Actor.GetBonePosition("Hips"), Actor.GetBonePosition("Hips") + TargetDirection * 20.0f, Color.red, 1.0f);
+        //Debug.DrawLine(Actor.GetBonePosition("Hips"), Actor.GetBonePosition("Hips") + TargetDirection * 20.0f, Color.red, 1.0f);
 
         // not sure if I should be damping these or what values to use?
         TargetLFLocalVelocity = InverseTargetRotation * TargetLFGlobalVelocity * ForwardScaling;
