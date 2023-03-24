@@ -121,7 +121,11 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	[Range(0.0f, 2.0f)]
 	public float VelocityThreshold = 0.05f;
 	[Range(0.0f, 2.0f)]
-	public float PositionTheshold = 0.035f;
+	public float LFPositionTheshold = 0.035f;
+	[Range(0.0f, 2.0f)]
+	public float RFPositionTheshold = 0.035f;
+	[Range(0.0f, 5.0f)]
+	public float FeetThresholdMultiplier = 1.2f;
 
 	[Header("Action control")]
 	//public Transform Neck;
@@ -130,6 +134,8 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	public float PelvisThreshold = 1.0f;
 	[Range(0.0f, 2.0f)]
 	public float NeckThreshold = 1.5f;
+
+
 
 	private Vector3 LeftFootPosition;
 	private Vector3 LastLeftFootPosition;
@@ -166,7 +172,17 @@ public class Controller_PIPELINE5 : MonoBehaviour
 		//Actor = GetComponent<Actor>();
 		dt = deltatime;
 
-        LeftFootPosition = LeftFoot.position;
+		// set up thresholds for body parts
+		LFPositionTheshold = LeftFoot.position.y * FeetThresholdMultiplier;
+		RFPositionTheshold = RightFoot.position.y * FeetThresholdMultiplier;
+		Debug.Log(Pelvis.position);
+
+
+
+
+
+
+		LeftFootPosition = LeftFoot.position;
         LastLeftFootPosition = LeftFoot.position;
         ////      LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
         ////LastLeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
@@ -184,7 +200,13 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 
         PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
-    }
+
+
+
+	
+
+
+	}
 
 
 	// https://learn.microsoft.com/en-us/dotnet/api/system.func-1?view=net-7.0
@@ -229,7 +251,10 @@ public class Controller_PIPELINE5 : MonoBehaviour
     public void UpdateController()
 	{
 
-        LastLeftFootPosition = LeftFootPosition;
+		//Debug.Log(LeftFoot.position);
+		Debug.Log(Pelvis.position);
+
+		LastLeftFootPosition = LeftFootPosition;
         LeftFootPosition = LeftFoot.position;
         ////LeftFootPosition = LeftControllerPosition.action.ReadValue<Vector3>();
         LeftFootGlobalVelocity = (LeftFootPosition - LastLeftFootPosition) / dt;
