@@ -57,7 +57,8 @@ namespace DeepLearning
             // load actual NeuralNet and create worker
             m_RuntimeModel = ModelLoader.Load(modelAsset, verbose);
             // need to explore other worker types. .  https://docs.unity3d.com/Packages/com.unity.barracuda@1.0/manual/Worker.html
-            Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel, verbose);
+            //Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, m_RuntimeModel, verbose);
+            Worker = WorkerFactory.CreateWorker(WorkerFactory.Type.CSharpBurst, m_RuntimeModel);
 
             // tensors to hold inputs and outputs
             x = new Tensor(1, xdim);
