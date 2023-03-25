@@ -716,15 +716,15 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
     {
         // should we be feeding past target inputs or past values actually achieved by the dog?? As things stand, it's past target inputs. (Should I input spring damped values?)
         // this is fecked now as I've done everything based on a 3 second window and so these series have 3 x 20 frames now rather than 1 x 18
-        for (int i = TimeSeriesPast.Pivot - 18; i <= TimeSeriesPast.Pivot; i++)
+        for (int i = TimeSeriesPast.Pivot - 20; i <= TimeSeriesPast.Pivot; i++)
         {
             RootVelPredictionNet.Feed(LFSeries.GetVelocity(i));
         }
-        for (int i = TimeSeriesPast.Pivot - 18; i <= TimeSeriesPast.Pivot; i++)
+        for (int i = TimeSeriesPast.Pivot - 20; i <= TimeSeriesPast.Pivot; i++)
         {
             RootVelPredictionNet.Feed(RFSeries.GetVelocity(i));
         }
-        for (int i = TimeSeriesPast.Pivot - 18; i < TimeSeriesPast.Pivot; i++)
+        for (int i = TimeSeriesPast.Pivot - 20; i < TimeSeriesPast.Pivot; i++)
         {
             RootVelPredictionNet.FeedXZ(TargetLocalRootVelocitySeries.GetVelocity(i));
         }
