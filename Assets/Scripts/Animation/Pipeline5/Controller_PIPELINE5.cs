@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Valve.VR;
+
 //using UnityEngine.InputSystem;
 //using UnityEngine.XR.OpenXR.Input;
 
@@ -147,7 +149,11 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	[SerializeField]
 	private bool NeckThresholdSet = false;
 	[Range(0.0f, 5.0f)]
-	public float NeckThresholdMultiplier = 0.9f;
+	public float NeckThresholdMultiplier = 0.7f;
+
+
+	public SteamVR_Input_Sources HMD;
+	public SteamVR_Action_Pose HeadPose;
 
 
 
@@ -196,6 +202,9 @@ public class Controller_PIPELINE5 : MonoBehaviour
 		PelvisPositionThreshold = 1.0f;
 		PelvisThresholdMultiplier = 0.7f;  //  remove if I identify perfect value
 
+		NeckPositionThreshold = 1.0f;
+		NeckThresholdMultiplier = 0.5f;
+
 
 		LeftFootPosition = LeftFoot.position;
         LastLeftFootPosition = LeftFoot.position;
@@ -209,6 +218,11 @@ public class Controller_PIPELINE5 : MonoBehaviour
         LastPelvisPosition = Pelvis.position;
         PelvisGlobalVelocity = Vector3.zero;
         PelvisForwardDirection = Vector3.ProjectOnPlane(Pelvis.forward, Vector3.up);
+
+		//HMD = (int)OpenVR.k_unTrackedDeviceIndex_Hmd;
+		NeckPosition = HeadPose.GetLocalPosition(HMD);
+		//Debug.Log(NeckPosition);
+
 	}
 
 
@@ -255,7 +269,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 	{
 
 		// Create user based thresholds
-		if (!LFThresholdSet )
+		if (!LFThresholdSet)
         {
 			LFPositionTheshold = LeftFoot.position.y * FeetThresholdMultiplier;
 			if (LFPositionTheshold > 0.0f)
@@ -270,7 +284,6 @@ public class Controller_PIPELINE5 : MonoBehaviour
 			{
 				RFThresholdSet = true;
 			}
-
 		}
 		if (!PelvisThresholdSet)
 		{
@@ -279,9 +292,13 @@ public class Controller_PIPELINE5 : MonoBehaviour
 			{
 				PelvisThresholdSet = true;
 			}
-
 		}
-
+        if (!NeckThresholdSet && PelvisThresholdSet)
+        {
+            NeckPositionThreshold = PelvisPositionThreshold * NeckThresholdMultiplier;
+			NeckThresholdSet = true;
+		}
+       
 
 		LastLeftFootPosition = LeftFootPosition;
         LeftFootPosition = LeftFoot.position;
@@ -296,6 +313,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 		PelvisPosition = Pelvis.position;
 		PelvisGlobalVelocity = Vector3.ProjectOnPlane((PelvisPosition - LastPelvisPosition) / dt, Vector3.up);
 
+		NeckPosition = HeadPose.GetLocalPosition(HMD);
 
 		////HMDHeight = HMDPosition.action.ReadValue<Vector3>().y;
 	}
@@ -466,8 +484,8 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QuerySit()
 	{
-        //if (Pelvis.position.y < PelvisThreshold && !(Neck.position.y < NeckThreshold))
-        if (Pelvis.position.y < PelvisPositionThreshold)
+        if (Pelvis.position.y < PelvisPositionThreshold && !(NeckPosition.y < NeckPositionThreshold))
+        //if (Pelvis.position.y < PelvisPositionThreshold)
         //if (HMDHeight < PelvisThreshold)
         {
             return 1.0f;
@@ -480,15 +498,15 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryLie()
 	{
-		//if (Pelvis.position.y < PelvisThreshold && Neck.position.y < NeckThreshold)
-		//{
-		//	return 1.0f;
-		//}
-		//else
-		//{
-			return 0.0f;
-		//}
-	}
+		if ((Pelvis.position.y < PelvisPositionThreshold) && (NeckPosition.y < NeckPositionThreshold))
+		{
+            return 1.0f;
+        }
+        else
+        {
+            return 0.0f;
+        }
+    }
 
 	public float QueryStand()
 	{

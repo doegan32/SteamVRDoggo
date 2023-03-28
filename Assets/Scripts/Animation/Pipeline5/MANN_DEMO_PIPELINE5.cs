@@ -623,7 +623,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         move = 1.0f - idle;
 
         isSitting =  Controller.QuerySit();
-        isLieing = 0.0f; // Controller.QueryLie();
+        isLieing = Controller.QuerySit(); // Controller.QueryLie();
         isStanding = 0.0f; // Controller.QueryStand();
 
         //if (move == 1.0f)
@@ -635,6 +635,13 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         if (isSitting == 1.0f)
         {
             isLieing = 0.0f;
+            isStanding = 0.0f;
+            move = 0.0f;
+            idle = 1.0f;
+        }
+        else if(isLieing == 1.0f)
+        {
+            isSitting = 0.0f;
             isStanding = 0.0f;
             move = 0.0f;
             idle = 1.0f;
@@ -659,7 +666,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                     );
                 StyleSeries.Values[i][3] = Mathf.Lerp(
                     StyleSeries.Values[i][3],
-                    0.0f, //isLieing,
+                    isLieing,
                     1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );;
                 StyleSeries.Values[i][4] = Mathf.Lerp(
