@@ -441,7 +441,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public Vector3 QueryTargetVelocity()
 	{
-		return Vector3.zero;// PelvisGlobalVelocity;
+		return Vector3.zero; // PelvisGlobalVelocity;
 	}
 	public Vector3 QueryTargetDirection()
 	{
@@ -484,9 +484,8 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QuerySit()
 	{
-        if (Pelvis.position.y < PelvisPositionThreshold && !(NeckPosition.y < NeckPositionThreshold))
-        //if (Pelvis.position.y < PelvisPositionThreshold)
-        //if (HMDHeight < PelvisThreshold)
+        //if (Pelvis.position.y < PelvisPositionThreshold && !(NeckPosition.y < NeckPositionThreshold))
+        if (Pelvis.position.y < PelvisPositionThreshold)
         {
             return 1.0f;
         }
@@ -498,14 +497,15 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryLie()
 	{
-		if ((Pelvis.position.y < PelvisPositionThreshold) && (NeckPosition.y < NeckPositionThreshold))
-		{
-            return 1.0f;
-        }
-        else
-        {
-            return 0.0f;
-        }
+		//if ((Pelvis.position.y < PelvisPositionThreshold) && (NeckPosition.y < NeckPositionThreshold))
+		//{
+  //          return 1.0f;
+  //      }
+  //      else
+  //      {
+  //          return 0.0f;
+  //      }
+		return 0.0f;
     }
 
 	public float QueryStand()

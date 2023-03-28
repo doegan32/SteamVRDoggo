@@ -158,9 +158,6 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
 
 
 
-
-
-
         //NetworkSeries = new RootSeries(timeSeries);
         //for (int i = 0; i < timeSeries.SampleCount; i++)
         //{
@@ -302,6 +299,11 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         // I guess the thinking is that if "idle" is 1, then the root shoudln't update
         // and if "idle" is 0, then the Lerp won't have any effect. . .  . . . . . . but what if human does something "undoglike" like turning on the spot??
         // and should "idle" be based of net prediction or human input?
+        //Debug.Log("idle : " + StyleSeries.Values[TimeSeries.Pivot][0].ToString());
+        //Debug.Log("move : " + StyleSeries.Values[TimeSeries.Pivot][1].ToString());
+        //Debug.Log("sit : " + StyleSeries.Values[TimeSeries.Pivot][2].ToString());
+        //Debug.Log("lie : " + StyleSeries.Values[TimeSeries.Pivot][3].ToString());
+        //Debug.Log("stand : " + StyleSeries.Values[TimeSeries.Pivot][4].ToString());
         xz_vel = Vector3.Lerp(xz_vel, Vector3.zero, StyleSeries.GetStyle(TimeSeries.Pivot, "idle"));
         a_vel = Mathf.Lerp(a_vel, 0.0f, StyleSeries.GetStyle(TimeSeries.Pivot, "idle"));
 
@@ -314,6 +316,9 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         //// Need to insert Idle and Move here 
         StyleSeries.Values[TimeSeries.Pivot][0] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 1.0f : 0.0f;
         StyleSeries.Values[TimeSeries.Pivot][1] = (xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate()) < MoveThreshold ? 0.0f : 1.0f;
+        //Debug.Log("idle " + StyleSeries.Values[TimeSeries.Pivot][0].ToString());
+        //Debug.Log(xz_vel.ToString());
+        //Debug.Log(xz_vel.GetRelativeDirectionFrom(root).ZeroY().magnitude * GetFrameRate());
 
 
         // update actions for Pivot, based on NN output
@@ -558,6 +563,9 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         TargetLocalRootVelocity = PredictTargetRootVelocity();
         TargetLocalRootVelocitySeries.SetVelocity(TimeSeriesPast.Pivot, TargetLocalRootVelocity);
         TargetGlobalRootVelocity = TargetRotation * TargetLocalRootVelocity;
+        //TargetGlobalRootVelocity = Controller.QueryTargetVelocity() * ForwardScaling;
+
+
         
         
         //TargetGlobalRootVelocity = Controller.QueryTargetVelocity();
@@ -623,7 +631,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         move = 1.0f - idle;
 
         isSitting =  Controller.QuerySit();
-        isLieing = Controller.QuerySit(); // Controller.QueryLie();
+        isLieing = 0.0f; Controller.QueryLie();
         isStanding = 0.0f; // Controller.QueryStand();
 
         //if (move == 1.0f)
@@ -666,7 +674,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
                     );
                 StyleSeries.Values[i][3] = Mathf.Lerp(
                     StyleSeries.Values[i][3],
-                    isLieing,
+                    0.0f,
                     1f//Controller.QueryFunction(StyleSeries.Styles[j] + "Control", i)
                     );;
                 StyleSeries.Values[i][4] = Mathf.Lerp(
