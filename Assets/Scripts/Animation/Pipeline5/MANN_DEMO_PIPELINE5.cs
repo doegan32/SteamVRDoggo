@@ -544,7 +544,7 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
         // should check if smoothing these with springs makes motion more crisp
 
 
-        // not sure if I want to do this test
+        // not sure if I want to do this test - this seems to help? but I don't have a clue why as currently QueryTargetVelocity is always zero???
         Vector3 HumanGlobalRootVelocity = Controller.QueryTargetVelocity();
         Vector3 HumanLocalRootVelocity = InverseTargetRotation * HumanGlobalRootVelocity;
         if (HumanLocalRootVelocity.z < 0.0f)

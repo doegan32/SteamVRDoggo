@@ -460,7 +460,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryLFContact()
 	{
-		if (LeftFootPosition.y < LFPositionTheshold)  //((LeftFootGlobalVelocity.magnitude < VelocityThreshold)) // (LeftFootPosition.y < PositionTheshold) && (
+		if (LeftFootPosition.y < LFPositionTheshold && LeftFootGlobalVelocity.magnitude < VelocityThreshold) // (LeftFootPosition.y < PositionTheshold) && (
 		{
 			return 1.0f;
 		}
@@ -472,7 +472,7 @@ public class Controller_PIPELINE5 : MonoBehaviour
 
 	public float QueryRFContact()
 	{
-		if ( RightFootPosition.y < RFPositionTheshold) //( (RightFootGlobalVelocity.magnitude < VelocityThreshold)) // (RightFootPosition.y < PositionTheshold) &&
+		if ( RightFootPosition.y < RFPositionTheshold && RightFootGlobalVelocity.magnitude < VelocityThreshold) // (RightFootPosition.y < PositionTheshold) &&
 		{
 			return 1.0f;
 		}
