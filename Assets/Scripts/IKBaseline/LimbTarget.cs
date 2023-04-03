@@ -71,8 +71,10 @@ public class LimbTarget : MonoBehaviour
             //this.transform.position = new Vector3(Positiom.x, Mathf.Clamp(Positiom.y, 0.0f, 999.0f), Positiom.z);
 
             TargetPosition = Target.position;
-            this.transform.position = new Vector3(TargetPosition.x, TargetPosition.y - DefaultHeight + DogEndEffectorHeight, TargetPosition.z);
 
+            TargetPosition = new Vector3(TargetPosition.x, TargetPosition.y - DefaultHeight + DogEndEffectorHeight, TargetPosition.z);
+            TargetPosition = new Vector3(TargetPosition.x, Mathf.Max(0.0f, TargetPosition.y), TargetPosition.z);
+            this.transform.position = TargetPosition;
 
         }
 
