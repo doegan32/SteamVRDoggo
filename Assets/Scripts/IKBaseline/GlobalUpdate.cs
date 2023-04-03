@@ -7,7 +7,7 @@ public class GlobalUpdate : MonoBehaviour
 
     public Transform Target;
 
-
+   
 
 
 
@@ -36,10 +36,13 @@ public class GlobalUpdate : MonoBehaviour
     private bool PelvisDefaultHeightSet = false;
 
     [Header("Smoothing")]
+    private Vector3 TargetDirection;
     private Vector3 FacingDirection;
+    private Vector3 FacingDirectionVelocity;
     private Vector3 FacingDirectionHalfLife;
     [Range(0.0f, 2.0f)]
     public float HalfLifeFacingDirection = 0.2f;
+    private float dt;
 
 
 
@@ -55,7 +58,21 @@ public class GlobalUpdate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        FacingDirection = Vector3.ProjectOnPlane(Target.right, Vector3.up);
+        dt = Time.deltaTime;
+        FacingDirection = Vector3.forward;
+        FacingDirectionVelocity = Vector3.zero;
+        TargetDirection = Vector3.ProjectOnPlane(Target.right, Vector3.up);
+        Springs.CriticalSpringDamper(
+            ref FacingDirection,
+            ref FacingDirectionVelocity,
+            TargetDirection,
+            HalfLifeFacingDirection,
+            dt
+        );
+
+
+
+
         //Position = Vector3.ProjectOnPlane(Target.position, Vector3.up) - new Vector3(0.0f, 0.0f, 0.5f); ;
 
         Position = Target.position;
@@ -66,6 +83,7 @@ public class GlobalUpdate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        dt = Time.deltaTime;
 
         // Create user based thresholds
         if (!LFDefaultHeightSet)
@@ -94,19 +112,28 @@ public class GlobalUpdate : MonoBehaviour
         }
 
 
-
+        // Update Facing Direction
+        TargetDirection = Vector3.ProjectOnPlane(Target.right, Vector3.up);
+        Springs.CriticalSpringDamper(
+            ref FacingDirection,
+            ref FacingDirectionVelocity,
+            TargetDirection,
+            HalfLifeFacingDirection,
+            dt
+        );
+        this.transform.rotation = Quaternion.LookRotation(FacingDirection, Vector3.up);
 
 
 
         FacingDirection = Vector3.ProjectOnPlane(Target.right, Vector3.up);
 
-        LastPosition = Position;
-        Position = Target.position;
-        Velocity = Vector3.Project(Position - LastPosition, Vector3.up);
-        //Position = Vector3.ProjectOnPlane(Target.position, Vector3.up) - new Vector3(0.0f, 0.0f, 1.0f);
+        //LastPosition = Position;
+        //Position = Target.position;
+        //Velocity = Vector3.Project(Position - LastPosition, Vector3.up);
+        ////Position = Vector3.ProjectOnPlane(Target.position, Vector3.up) - new Vector3(0.0f, 0.0f, 1.0f);
 
-        //Velocity = Position - LastPosition;
-        this.transform.rotation = Quaternion.LookRotation(FacingDirection, Vector3.up);
-        this.transform.position = Position + Velocity;
+        ////Velocity = Position - LastPosition;
+        
+        //this.transform.position = Position + Velocity;
     }
 }
