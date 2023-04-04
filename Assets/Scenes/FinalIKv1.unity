@@ -689,6 +689,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 701925014}
   - {fileID: 1836866183}
   - {fileID: 465829293}
   - {fileID: 704316355}
@@ -799,7 +800,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &257057301
 AudioListener:
   m_ObjectHideFlags: 0
@@ -864,7 +865,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 14.975, y: 0, z: 0}
 --- !u!1 &277964352
 GameObject:
@@ -1671,8 +1672,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 220032565}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 53.069, y: 90, z: 90}
 --- !u!1001 &702957935
 PrefabInstance:
@@ -1771,7 +1772,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 220032565}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!154 &704316356
 TerrainCollider:
@@ -2135,7 +2136,7 @@ Transform:
   - {fileID: 1904456487}
   - {fileID: 664349049}
   m_Father: {fileID: 220032565}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &942587334
 BoxCollider:
@@ -2645,7 +2646,7 @@ Transform:
   - {fileID: 1524188436}
   - {fileID: 293298323}
   m_Father: {fileID: 220032565}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!65 &1225308063
 BoxCollider:
@@ -4306,7 +4307,7 @@ Transform:
   - {fileID: 380109132}
   - {fileID: 249297114}
   m_Father: {fileID: 220032565}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1001 &1882602870
 PrefabInstance:
@@ -4321,7 +4322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 498786, guid: cc84a7ed9371ee046acb8b2a86978276, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 498786, guid: cc84a7ed9371ee046acb8b2a86978276, type: 3}
       propertyPath: m_LocalScale.x
@@ -4627,7 +4628,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4216859302048453862, guid: f6ee17234c1102d46b8c91d6aae67ffe, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: f6ee17234c1102d46b8c91d6aae67ffe, type: 3}
       propertyPath: m_LocalScale.x
