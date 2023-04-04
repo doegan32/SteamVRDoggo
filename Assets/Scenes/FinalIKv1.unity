@@ -3305,7 +3305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DogEndEffector: {fileID: 4745493593975644467}
-  Target: {fileID: 1657449436}
+  Target: {fileID: 1678998452}
   DefaultHeight: 0
   DefaultHeightSet: 0
 --- !u!4 &1581026883
@@ -3715,7 +3715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DogEndEffector: {fileID: 4356357187199070120}
-  Target: {fileID: 1678998452}
+  Target: {fileID: 1657449436}
   DefaultHeight: 0
   DefaultHeightSet: 0
 --- !u!4 &1719470499
