@@ -766,6 +766,6 @@ public class MANN_DEMO_PIPELINE5 : NeuralAnimation
 
     protected override void OnRenderObjectDerived()
     {
-        RootSeries.Draw(GetCamera()); // need to fix up so not just drawing on top of each other
+        //RootSeries.Draw(GetCamera()); // need to fix up so not just drawing on top of each other
     }
 }
